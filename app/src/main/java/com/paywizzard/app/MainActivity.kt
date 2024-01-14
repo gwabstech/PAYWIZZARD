@@ -37,5 +37,6 @@ class MainActivity : ComponentActivity() {
 fun GreetingPreview() {
     PAYWIZZARDTheme {
 
+        SplashScreen()
     }
 }
