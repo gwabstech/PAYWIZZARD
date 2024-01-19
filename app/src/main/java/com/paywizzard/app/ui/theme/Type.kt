@@ -6,6 +6,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.paywizzard.app.R
 
 val Poppins = FontFamily(
@@ -31,7 +33,8 @@ val Typography = Typography(
     ),
     bodyLarge = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Thin,
+        textAlign = TextAlign.Center,
         fontSize = 14.sp
     )
 

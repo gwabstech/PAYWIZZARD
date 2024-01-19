@@ -1,7 +1,5 @@
 package com.paywizzard.app.screens
 
-import android.widget.Button
-import android.window.SplashScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,27 +10,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paywizzard.app.R
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
-import com.paywizzard.app.ui.theme.bluePrimary
+
 
 @Composable
 fun SplashScreen(
@@ -58,9 +50,10 @@ fun SplashScreen(
                 contentDescription = "",
                 modifier = modifier
                     .width(100.dp)
-                    .height(90.dp) // Adjust size as needed
+                    .height(100.dp) // Adjust size as needed
             )
         }
+
         // Bottom section with image and button
         Column(
             modifier = Modifier
@@ -74,31 +67,29 @@ fun SplashScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-/*
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "",
-                    modifier = modifier.size(60.dp) // Adjust size as needed
-                )
+
+
                 Spacer(modifier = modifier.width(2.dp))
 
- */
                Text(
                    text = stringResource(R.string.appName),
-                   color = bluePrimary,
+                   color = MaterialTheme.colorScheme.primary,
                    style = MaterialTheme.typography.displayMedium,
                    letterSpacing = 2.sp
 
                )
+
+
             }
+
+
 
             Text(
                 text = stringResource(R.string.appVersion),
                 textAlign = TextAlign.Center,
-                color = Color.Black,
-               
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = modifier.padding(start = 10.dp)
+                modifier = modifier.padding(10.dp)
 
             )
             Spacer(modifier = modifier.height(10.dp))
@@ -113,6 +104,6 @@ fun SplashScreen(
 @Composable
 fun SplashScreenPreview() {
     PAYWIZZARDTheme (darkTheme = false){
-        SplashScreen()
+
     }
 }
