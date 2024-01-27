@@ -12,13 +12,17 @@ import com.paywizzard.app.R
 
 val Poppins = FontFamily(
     Font(R.font.poppins_bold),
-    Font(R.font.poppins_regular)
+    Font(R.font.poppins_regular),
+    Font(R.font.poppins_medium),
+    Font(R.font.poppins_light),
+    Font(R.font.poppins_black_italic),
 )
 
 val Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
+        letterSpacing = 2.sp,
         fontSize = 20.sp
     ),
     displayMedium = TextStyle(

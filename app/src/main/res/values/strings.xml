@@ -2,5 +2,8 @@
     <string name="app_name">Paywizzard</string>
     <string name="appName">Paywizzard</string>
     <string name="appVersion">V1.0.0</string>
+    <string name="login">Sign In</string>
+    <string name="register">Create Account</string>
+    <string name="title_activity_auth_actiity">AuthActiity</string>
 
 </resources>

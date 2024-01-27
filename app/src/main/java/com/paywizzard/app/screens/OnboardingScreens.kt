@@ -1,5 +1,6 @@
 package com.paywizzard.app.screens
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,18 +40,28 @@ import com.paywizzard.app.data.OnboardingPageData
 import com.paywizzard.app.data.onboardingPages
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
+/*
+val intent = Intent(this, NewActivity::class.java)
+startActivity(intent)
+*/
+
+
+
 
 @Composable
-fun OnboardingScreen() {
+fun OnboardingScreen(
+    toAuthActivity: ()-> Unit
+) {
     var currentPage by remember { mutableIntStateOf(0) }
 
     // Function to handle "Next" button click
+
+
     val onNextClick: () -> Unit = {
         if (currentPage < onboardingPages.size - 1) {
             currentPage++
         } else {
-            //Todo navigation to LoginScreen
-            // Handle completion, e.g., navigate to the main screen
+            toAuthActivity()
         }
     }
 
@@ -58,6 +69,7 @@ fun OnboardingScreen() {
     val onSkipClick: () -> Unit = {
         //Todo navigation to LoginScreen
         // Handle skip action, e.g., navigate to the main screen
+        toAuthActivity()
     }
 
     // Call the OnboardingPage composable with the current page data
@@ -175,17 +187,12 @@ fun OnboardingPreview() {
 
     PAYWIZZARDTheme(darkTheme = false) {
 
-        OnboardingScreen()
+        OnboardingScreen(){
+
+        }
+
+
     }
 
-    /*
- OnboardingPage(
-     imageId = R.drawable.onboadring_image1,
-     title = "Text",
-     description = data,
-     isLastPage = false,
-     onNextClick = { /*TODO*/ })
-}
 
-     */
 }

@@ -54,7 +54,6 @@ fun WhiteButton(
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
         modifier = modifier
-            .padding(horizontal = 20.dp)
             .fillMaxWidth()
             .height(50.dp)
     ) {

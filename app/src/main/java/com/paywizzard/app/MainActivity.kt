@@ -1,5 +1,6 @@
 package com.paywizzard.app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,8 +16,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat.startActivity
 import com.paywizzard.app.data.OnboardingPageData
 import com.paywizzard.app.screens.OnboardingPage
+import com.paywizzard.app.screens.OnboardingScreen
 import com.paywizzard.app.screens.SplashScreen
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
@@ -31,7 +34,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                  HomePage()
+                 OnboardingScreen {
+                     val intent = Intent(this, AuthActivity::class.java)
+                     startActivity(intent)
+                     this.finish()
+                 }
                 }
 
             }
@@ -40,8 +47,11 @@ class MainActivity : ComponentActivity() {
 }
 
 
+/*
 @Composable
-fun HomePage(){
+fun HomePage(
+
+){
 
     var currentPage by remember { mutableIntStateOf(0) }
     val data1 = """
@@ -104,11 +114,14 @@ fun HomePage(){
     )
 }
 
+ */
+
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
     PAYWIZZARDTheme {
+        OnboardingScreen {
 
-        SplashScreen()
+        }
     }
 }
