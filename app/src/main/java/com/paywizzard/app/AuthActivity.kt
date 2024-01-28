@@ -23,6 +23,7 @@ class AuthActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     GetStartedPage(onLoginCLicked = {
                         Toast.makeText(this,"Login",Toast.LENGTH_SHORT).show()
                     }) {

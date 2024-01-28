@@ -5,5 +5,11 @@
     <string name="login">Sign In</string>
     <string name="register">Create Account</string>
     <string name="title_activity_auth_actiity">AuthActiity</string>
+    <string name="email_address">Email Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="password">password</string>
+    <string name="re_password">Re Password</string>
+    <string name="next">Next</string>
+    <string name="already_have_an_account">"Already have an Account? "</string>
 
 </resources>

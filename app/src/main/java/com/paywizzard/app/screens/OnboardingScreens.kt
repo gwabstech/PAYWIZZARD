@@ -40,13 +40,6 @@ import com.paywizzard.app.data.OnboardingPageData
 import com.paywizzard.app.data.onboardingPages
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
-/*
-val intent = Intent(this, NewActivity::class.java)
-startActivity(intent)
-*/
-
-
-
 
 @Composable
 fun OnboardingScreen(

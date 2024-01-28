@@ -34,7 +34,7 @@ fun BlueButton(
 
     ) {
         Text(
-            text = title, style = MaterialTheme.typography.titleLarge
+            text = title, style = MaterialTheme.typography.displayLarge
 
         )
     }

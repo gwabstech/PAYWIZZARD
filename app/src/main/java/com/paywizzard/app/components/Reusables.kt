@@ -53,7 +53,7 @@ fun EditText(
         label = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.displayMedium
             )
         },
         onValueChange = {
@@ -69,7 +69,7 @@ fun EditText(
         ),
         modifier = modifier.fillMaxWidth(),
         visualTransformation = visualTransformation,
-        textStyle = MaterialTheme.typography.labelMedium
+        textStyle = MaterialTheme.typography.labelSmall
     )
 
     if (!isValid) {
