@@ -65,11 +65,11 @@ fun EditText(
         maxLines = 1,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xffD9D9D9),
-            unfocusedBorderColor = Color(0xffD9D9D9)
+            unfocusedBorderColor = Color(0x56020040) //
         ),
         modifier = modifier.fillMaxWidth(),
         visualTransformation = visualTransformation,
-        textStyle = MaterialTheme.typography.labelSmall
+        textStyle = MaterialTheme.typography.displayMedium
     )
 
     if (!isValid) {

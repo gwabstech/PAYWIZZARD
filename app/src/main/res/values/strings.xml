@@ -11,5 +11,11 @@
     <string name="re_password">Re Password</string>
     <string name="next">Next</string>
     <string name="already_have_an_account">"Already have an Account? "</string>
+    <string name="firstName">First Name</string>
+    <string name="lastName">Last Name</string>
+    <string name="userName">UserName</string>
+    <string name="refCode">Referral Code </string>
+    <string name="submit">Submit</string>
+
 
 </resources>
