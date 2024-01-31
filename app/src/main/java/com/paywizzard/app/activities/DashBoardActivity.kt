@@ -1,19 +1,18 @@
 package com.paywizzard.app.activities
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.paywizzard.app.screens.authPages.GetStartedPage
-import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
+import com.paywizzard.app.activities.ui.theme.PAYWIZZARDTheme
 
-class AuthActivity : ComponentActivity() {
+class DashBoardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -24,11 +23,6 @@ class AuthActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    GetStartedPage(onLoginCLicked = {
-                        Toast.makeText(this,"Login",Toast.LENGTH_SHORT).show()
-                    }) {
-                        Toast.makeText(this,"Register",Toast.LENGTH_SHORT).show()
-                    }
                 }
             }
         }
@@ -37,12 +31,10 @@ class AuthActivity : ComponentActivity() {
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun AuthPreview() {
+fun DashboardPreview() {
     PAYWIZZARDTheme {
-        GetStartedPage(onLoginCLicked = { /*TODO*/ }) {
 
-        }
     }
 }
