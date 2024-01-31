@@ -1,4 +1,4 @@
-package com.paywizzard.app
+package com.paywizzard.app.activities
 
 import android.os.Bundle
 import android.widget.Toast
@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.paywizzard.app.screens.GetStartedPage
+import com.paywizzard.app.screens.authPages.GetStartedPage
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
 class AuthActivity : ComponentActivity() {

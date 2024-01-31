@@ -53,7 +53,7 @@ fun EditText(
         label = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.bodyMedium
             )
         },
         onValueChange = {
@@ -61,7 +61,7 @@ fun EditText(
 
             isValid = validateInput(type, it)
         },
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(8.dp),
         maxLines = 1,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xffD9D9D9),

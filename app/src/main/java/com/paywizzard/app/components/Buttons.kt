@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.paywizzard.app.ui.theme.lightBlue
 
 
 @Composable
@@ -56,9 +57,10 @@ fun WhiteButton(
 ) {
     OutlinedButton(
         onClick = onClick,
-        shape = RoundedCornerShape(20),
+        shape = RoundedCornerShape(18),
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = lightBlue
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -66,7 +68,9 @@ fun WhiteButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.displayLarge,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.background
         )
     }
 }

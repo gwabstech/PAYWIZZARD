@@ -21,9 +21,9 @@ val Poppins = FontFamily(
 val Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = FontFamily(Font( R.font.poppins_medium)),
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         letterSpacing = 2.sp,
-        fontSize = 20.sp
+        fontSize = 18.sp
     ),
     displayMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.poppins_medium)),
@@ -43,7 +43,7 @@ val Typography = Typography(
     ),
     bodyMedium =  TextStyle(
         fontFamily = FontFamily(Font(R.font.poppins_light)) ,
-        fontWeight = FontWeight.Thin,
+        fontWeight = FontWeight.Normal,
         textAlign = TextAlign.Center,
         fontSize = 16.sp
     ),

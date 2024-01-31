@@ -1,7 +1,6 @@
-package com.paywizzard.app.screens
+package com.paywizzard.app.screens.authPages
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,7 +69,7 @@ fun GetStartedPage(
         // Title
         Text(
             text = stringResource(id = R.string.appName),
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.displayLarge
 
             )
@@ -199,12 +197,12 @@ fun LoginPage(
                 Text(
                     text = "Don't have an Account? ",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyMedium
 
                 )
                 Text(
                     modifier = Modifier.clickable { onSignUpClicked() },
-                    text = "Sign up",
+                    text = "Sign up now",
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge
@@ -483,7 +481,7 @@ fun PersonalInfoPage(
                         onRefCodeChanged(it)
                     }
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(30.dp))
                 BlueButton(
                     title = stringResource(R.string.next),
                     modifier = Modifier.padding(bottom = 50.dp)
@@ -527,7 +525,7 @@ fun ForgotPasswordPage(
 
 
             Text(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.forgotPassword),
                 color = MaterialTheme.colorScheme.primary,
                 style =  MaterialTheme.typography.displayLarge,
                 modifier = Modifier.fillMaxWidth()

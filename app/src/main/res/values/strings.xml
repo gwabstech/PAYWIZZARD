@@ -5,7 +5,7 @@
     <string name="login">Sign In</string>
     <string name="register">Create Account</string>
     <string name="title_activity_auth_actiity">AuthActiity</string>
-    <string name="email_address">Email Address</string>
+    <string name="email_address">Email </string>
     <string name="phone_number">Phone Number</string>
     <string name="password">password</string>
     <string name="re_password">Re Password</string>
@@ -13,9 +13,10 @@
     <string name="already_have_an_account">"Already have an Account? "</string>
     <string name="firstName">First Name</string>
     <string name="lastName">Last Name</string>
-    <string name="userName">UserName</string>
+    <string name="userName">User Name</string>
     <string name="refCode">Referral Code </string>
     <string name="submit">Submit</string>
+    <string name="forgotPassword">Forgot Password</string>
 
 
 </resources>

@@ -2,7 +2,7 @@ package com.paywizzard.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-
+val lightBlue = Color(0xFF008aff)
 val md_theme_light_primary = Color(0xFF005BBF)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFD8E2FF)
