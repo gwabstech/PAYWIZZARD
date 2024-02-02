@@ -61,7 +61,7 @@ fun ForgotPasswordPage(
                 .padding(top = 120.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
         ) {
 
-
+            Spacer(modifier = Modifier.height(25.dp))
             Text(
                 text = stringResource(id = R.string.forgotPassword),
                 color = MaterialTheme.colorScheme.primary,

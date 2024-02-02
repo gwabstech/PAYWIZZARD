@@ -79,6 +79,7 @@ private fun GetStartedPreview(){
         GetStartedPage(onLoginCLicked = {
 
         }) {
+
         }
 
 
