@@ -10,7 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.paywizzard.app.activities.ui.theme.PAYWIZZARDTheme
+import com.paywizzard.app.screens.DashboardPage
+import com.paywizzard.app.screens.HomeScreen
 
 class DashBoardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +26,7 @@ class DashBoardActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
+                    DashboardPage()
                 }
             }
         }
@@ -31,10 +35,12 @@ class DashBoardActivity : ComponentActivity() {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun DashboardPreview() {
-    PAYWIZZARDTheme {
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun DashBoardPreview() {
+    com.paywizzard.app.ui.theme.PAYWIZZARDTheme {
+        val navController = rememberNavController()
+       DashboardPage()
     }
 }

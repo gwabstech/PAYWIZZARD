@@ -1,126 +1,171 @@
 package com.paywizzard.app.screens
 
-import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.paywizzard.app.R
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.paywizzard.app.components.BottomAppBar
+import com.paywizzard.app.nav.BottomNavDestinations
+import com.paywizzard.app.nav.HomeScreenNavDestinations
+import com.paywizzard.app.nav.ServicesDestinations
+import com.paywizzard.app.nav.TopAppBarNavDestinations
+import com.paywizzard.app.screens.services_pages.FundWalletScreen
+import com.paywizzard.app.screens.services_pages.GiftScreen
+import com.paywizzard.app.screens.services_pages.TransferScreen
+import com.paywizzard.app.screens.account.ProfileScreen
+import com.paywizzard.app.screens.services_pages.AirtimeSwapScreen
+import com.paywizzard.app.screens.services_pages.BuyAirtimeScreen
+import com.paywizzard.app.screens.services_pages.BuyCableTVScreen
+import com.paywizzard.app.screens.services_pages.BuyDataScreen
+import com.paywizzard.app.screens.services_pages.BuyInternetScreen
+import com.paywizzard.app.screens.services_pages.EducationScreen
+import com.paywizzard.app.screens.services_pages.ElectricityScreen
+import com.paywizzard.app.screens.services_pages.PromoBannerScreen
+import com.paywizzard.app.screens.services_pages.ReferAndEarnScreen
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
 @Composable
 fun DashboardPage() {
-    Scaffold(
-        topBar = { TopAppBar {
 
-        } },
-        bottomBar = { BottomAppBar() }
+    val navController = rememberNavController()
+
+    val bottomNavigationScreens = listOf<BottomNavDestinations>(
+        BottomNavDestinations.HomeScreen,
+        BottomNavDestinations.Wallet,
+        BottomNavDestinations.History,
+        BottomNavDestinations.Account
+    )
+    Scaffold(
+        contentColor = MaterialTheme.colorScheme.background,
+        bottomBar = {
+            BottomAppBar(navController,bottomNavigationScreens)
+        }
     ) {
-        Dashboard(it)
+        MainScreenNavigationConfigurations(paddingValues = it, navController = navController)
+
     }
 }
 
+
+
+
+
+
+
+
 @Composable
-fun Dashboard(
-    modifier: PaddingValues
-) {
-
-}
-
-@Composable
-fun TopAppBar(
-    onNotificationCLicked: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp, start = 8.dp, end = 8.dp, bottom = 5.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-
+private fun MainScreenNavigationConfigurations(
+    paddingValues: PaddingValues,
+    navController: NavHostController,
     ) {
 
+    NavHost(navController, startDestination = BottomNavDestinations.HomeScreen.route) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(25.dp)
-                )
-                .padding(end = 5.dp)
 
-        ) {
-
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.back_button),
-                contentScale = ContentScale.FillWidth,
-
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp)
-                    .align(Alignment.CenterVertically)
-            )
-
-            Text(
-                textAlign = TextAlign.Start,
-                text = "@Paywizzard",
-                modifier = Modifier.padding(horizontal = 5.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.titleMedium
-            )
-
+        composable(BottomNavDestinations.HomeScreen.route){
+            HomeScreen(navController = navController)
         }
 
-        Icon(
-            modifier = Modifier
-                .size(30.dp)
-                .clickable {
-                    //on clicked
-                    onNotificationCLicked()
-                },
-            imageVector = Icons.Default.Notifications,
-            tint = Color.Black,
-            contentDescription = "Notification"
-        )
+        composable(BottomNavDestinations.Wallet.route){
+            WalletScreen(paddingValues,navController = navController)
+        }
+        composable(BottomNavDestinations.History.route){
+            HistoryScreen(paddingValues,navController = navController)
+        }
+        composable(BottomNavDestinations.Account.route){
+            ProfileScreen(paddingValues,navController = navController)
+        }
+
+        composable(TopAppBarNavDestinations.NotificationScreen.route) {
+            // Destination implementation
+            NotificationScreen(paddingValues = paddingValues, navController = navController)
+        }
+        composable(TopAppBarNavDestinations.MoreScreen.route) {
+            // Destination implementation
+           MoreScreen(paddingValues = paddingValues, navController = navController)
+        }
+
+        composable(HomeScreenNavDestinations.GiftScreen.route) {
+            GiftScreen(navController = navController, paddingValues = paddingValues )
+        }
+        composable(HomeScreenNavDestinations.TransferScreen.route) {
+            TransferScreen(navController = navController, paddingValues = paddingValues )
+        }
+
+        composable(HomeScreenNavDestinations.FundWalletScreen.route) {
+            FundWalletScreen(navController = navController, paddingValues = paddingValues )
+        }
+
+
+        composable(HomeScreenNavDestinations.AirtimeSwapScreen.route) {
+            AirtimeSwapScreen(navController = navController, paddingValues = paddingValues )
+        }
+        composable(HomeScreenNavDestinations.PromoBannerScreen.route) {
+            PromoBannerScreen(navController = navController, paddingValues = paddingValues )
+        }
+
+        composable(HomeScreenNavDestinations.ReferAndEarnScreen.route) {
+            ReferAndEarnScreen(navController = navController, paddingValues = paddingValues )
+        }
+        composable(HomeScreenNavDestinations.TransactionsScreen.route) {
+           HistoryScreen(paddingValues = paddingValues, navController = navController)
+        }
+
+
+        // here
+
+        composable(ServicesDestinations.BuyAirtimeScreen.route) {
+            BuyAirtimeScreen(navController = navController, paddingValues = paddingValues )
+        }
+        composable(ServicesDestinations.BuyDataScreen.route) {
+            BuyDataScreen(navController = navController, paddingValues = paddingValues )
+        }
+
+        composable(ServicesDestinations.ElectricityScreen.route) {
+            ElectricityScreen(navController = navController, paddingValues = paddingValues )
+        }
+
+        composable(ServicesDestinations.BuyCableTVScreen.route) {
+            BuyCableTVScreen(navController = navController, paddingValues = paddingValues )
+        }
+        composable(ServicesDestinations.EducationScreen.route) {
+            EducationScreen(navController = navController, paddingValues = paddingValues )
+        }
+
+        composable(ServicesDestinations.BuyInternetScreen.route) {
+            BuyInternetScreen(navController = navController, paddingValues = paddingValues )
+        }
+        composable(ServicesDestinations.AirTimeSwapScreen.route) {
+            AirtimeSwapScreen(paddingValues = paddingValues, navController = navController)
+        }
+        composable(ServicesDestinations.MoreScreen.route) {
+            MoreScreen(paddingValues = paddingValues, navController = navController)
+        }
 
     }
 
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun GetStartedPreview() {
+private fun DashBoardPreview() {
     PAYWIZZARDTheme {
-       TopAppBar {
+        DashboardPage()
+    }
+}
 
-       }
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun HomePagePreview() {
+    PAYWIZZARDTheme {
+        val navController = rememberNavController()
+
+        HomeScreen(navController)
     }
 }

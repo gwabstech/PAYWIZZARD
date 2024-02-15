@@ -20,6 +20,7 @@
     <string name="title_activity_dash_board">DashBoardActivity</string>
     <string name="back_button">back button</string>
     <string name="history">History</string>
+    <string name="noTransactions">There are no recent activity to show here. \n Get started by making a transaction.</string>
 
 
 </resources>

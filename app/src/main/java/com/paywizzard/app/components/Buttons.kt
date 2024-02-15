@@ -40,7 +40,7 @@ fun BlueButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.displayLarge,
+            style = MaterialTheme.typography.displayMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.CenterVertically)
 
@@ -68,7 +68,7 @@ fun WhiteButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.displayLarge,
+            style = MaterialTheme.typography.displayMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.background
         )
