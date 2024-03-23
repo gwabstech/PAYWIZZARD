@@ -13,6 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,8 +45,14 @@ fun BlueButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.displayMedium,
-            textAlign = TextAlign.Center,
+            style = TextStyle(
+                fontStyle = FontStyle(com.paywizzard.app.R.font.poppins_bold),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                lineBreak = LineBreak.Simple,
+                textAlign = TextAlign.Center,
+                color = Color.White
+            ),
             modifier = Modifier.align(Alignment.CenterVertically)
 
         )
@@ -60,7 +71,7 @@ fun WhiteButton(
         shape = RoundedCornerShape(18),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = MaterialTheme.colorScheme.onSurface,
-            containerColor = lightBlue
+            containerColor = MaterialTheme.colorScheme.background
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -68,9 +79,16 @@ fun WhiteButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.displayMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.background
+            style = TextStyle(
+                fontStyle = FontStyle(com.paywizzard.app.R.font.poppins_bold),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                lineBreak = LineBreak.Simple,
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            ),
+
+
         )
     }
 }

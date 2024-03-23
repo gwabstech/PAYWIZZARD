@@ -28,17 +28,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Surface
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,82 +69,118 @@ import coil.decode.ImageDecoderDecoder
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.paywizzard.app.R
 import com.paywizzard.app.components.BannerCard
+import com.paywizzard.app.components.FundWalletButtomSheetContent
+import com.paywizzard.app.components.ServiceItemCard
 import com.paywizzard.app.components.TopAppBar
 import com.paywizzard.app.components.TransactionItemCard
 import com.paywizzard.app.data.Transaction
 import com.paywizzard.app.data.TransactionType
+import com.paywizzard.app.data.transactionList
 import com.paywizzard.app.nav.HomeScreenNavDestinations
 import com.paywizzard.app.nav.ServicesDestinations
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    //homeScreenViewMOdel:HomS
     navController: NavHostController,
 ) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-
-        TopAppBar(navController)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 10.dp, end = 10.dp)
-                .verticalScroll(rememberScrollState()),
-        ) {
-
-            Text(
-                modifier = Modifier
-                    .padding(top = 20.dp),
-                text = "Hi Favour ",
-                style = TextStyle(
-                    fontStyle = FontStyle(R.font.poppins_medium),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    letterSpacing = 3.sp,
-                    lineBreak = LineBreak.Simple,
-                    textAlign = TextAlign.Start,
-                )
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-            BalanceAndDashboard(navController = navController)
-
-            Text(
-                modifier = Modifier
-                    .basicMarquee(
-                        iterations = Int.MAX_VALUE
-                    )
-                    .padding(10.dp),
-                text = "Hi Favour Airtime Swap and gifting is now available kindly check them out.... thank you for patronage, bills payments made easy ",
-                style = TextStyle(
-                    fontStyle = FontStyle(R.font.poppins_medium),
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Normal,
-                    letterSpacing = 3.sp,
-                    lineBreak = LineBreak.Simple,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black
-                ),
-
-            )
-            ServiceCard(navController = navController)
-
-            Spacer(modifier = Modifier.height(15.dp))
-            BannerCard(navController = navController)
-
-            RecentTransactions(navController = navController, transactionList())
-
-        }
-
+    val sheetState = rememberModalBottomSheetState()
+    var isFundWalletSheetOpen by rememberSaveable {
+        mutableStateOf(false)
     }
+
+    MaterialTheme {
+        Surface (
+          color = MaterialTheme.colorScheme.background
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+                ) {
+
+                TopAppBar(navController)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 10.dp, end = 10.dp)
+                        .verticalScroll(rememberScrollState()),
+                ) {
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 20.dp),
+                        text = "Hi Favour ",
+                        style = TextStyle(
+                            fontStyle = FontStyle(R.font.poppins_medium),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            letterSpacing = 3.sp,
+                            lineBreak = LineBreak.Simple,
+                            textAlign = TextAlign.Start,
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                    BalanceAndDashboard(navController = navController){
+                        isFundWalletSheetOpen = true
+                    }
+
+                    Text(
+                        modifier = Modifier
+                            .basicMarquee(
+                                iterations = Int.MAX_VALUE
+                            )
+                            .padding(10.dp),
+                        text = "Hi Favour Airtime Swap and gifting is now available kindly check them out.... thank you for patronage, bills payments made easy ",
+                        style = TextStyle(
+                            fontStyle = FontStyle(R.font.poppins_medium),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                            letterSpacing = 3.sp,
+                            lineBreak = LineBreak.Simple,
+                            textAlign = TextAlign.Center,
+                            color = Color.Black
+                        ),
+
+                        )
+                    ServiceCard(navController = navController)
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                    BannerCard(navController = navController)
+
+                    RecentTransactions(navController = navController, transactionList())
+
+                    if (isFundWalletSheetOpen){
+                        ModalBottomSheet(
+                            sheetState = sheetState,
+                            dragHandle = { BottomSheetDefaults.DragHandle() },
+                            onDismissRequest = { isFundWalletSheetOpen = false }
+                        ) {
+                            var account = "12378463456"
+
+                            FundWalletButtomSheetContent(navController = navController,
+                                onBankTransferClicked = { /*TODO*/ },
+                                onManualFundingClicked = {}
+                            ) {
+                                // on Monify cliked
+                            }
+
+                        }
+                    }
+                }
+
+
+
+            }
+        }
+    }
+
 
 }
 
@@ -152,7 +193,7 @@ private fun RecentTransactions(
     Column (
           horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize().background(MaterialTheme.colorScheme.background)
 
     ){
 
@@ -236,10 +277,12 @@ private fun RecentTransactions(
 }
 
 
+
 @Composable
 private fun BalanceAndDashboard(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    onFundWallet: () -> Unit
 ) {
 
     var displayBalance by remember {
@@ -333,7 +376,7 @@ private fun BalanceAndDashboard(
 
         Spacer(modifier = modifier.height(20.dp))
        ActionsBanner(
-           onFundWallet = { navController.navigate(HomeScreenNavDestinations.FundWalletScreen.route) },
+           onFundWallet = { onFundWallet()},
            onTransfer = { navController.navigate(HomeScreenNavDestinations.TransferScreen.route)}) {
            navController.navigate(HomeScreenNavDestinations.GiftScreen.route)
        }
@@ -523,7 +566,7 @@ private fun ServiceCard(navController: NavHostController) {
         ),
         // Set specific colors for container and content
         colors = CardDefaults.cardColors(
-            containerColor = Color.White, // Set container background to white
+            containerColor = MaterialTheme.colorScheme.background, // Set container background to white
             contentColor = MaterialTheme.colorScheme.onBackground // Use theme's onBackground color for text
         ),
         modifier = Modifier
@@ -537,7 +580,7 @@ private fun ServiceCard(navController: NavHostController) {
                 modifier = Modifier
                     .padding(start = 15.dp, top = 15.dp, bottom = 15.dp),
                 // Set text color explicitly if needed (optional)
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.background,
                 style = TextStyle(
                     fontStyle = FontStyle(R.font.poppins_bold),
                     fontSize = 14.sp,
@@ -553,6 +596,7 @@ private fun ServiceCard(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(start = 20.dp, end = 20.dp),
                     state = pagerState,
                     rows = GridCells.Fixed(2),
@@ -583,6 +627,7 @@ private fun ServiceCard(navController: NavHostController) {
                             .background(if (isSelected) activeColor else inactiveColor)
                             .padding(horizontal = 4.dp)
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
                 }
             }
 
@@ -593,51 +638,15 @@ private fun ServiceCard(navController: NavHostController) {
 }
 
 
-@Composable
-fun ServiceItemCard(servicesDestinations: ServicesDestinations,navController: NavHostController){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(5.dp)
-    ) {
-       IconButton(onClick = {
-           navController.navigate(servicesDestinations.route)
-       }) {
-           Icon(
-               painter = painterResource(id = servicesDestinations.imageID),
-               contentDescription = servicesDestinations.title,
-               tint = MaterialTheme.colorScheme.primary,)
-       }
-        Text(
-            text = servicesDestinations.title!!,
-            style = TextStyle(
-                fontStyle = FontStyle(R.font.poppins_bold),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                letterSpacing = 2.sp,
-                lineBreak = LineBreak.Simple,
-                textAlign = TextAlign.Center,
-            ),
-            color = Color.Black,
-
-
-        )
-    }
-}
-
 @Preview(showBackground = true,)
 @Composable
 private fun HomePagePreview() {
     PAYWIZZARDTheme {
          val navController = rememberNavController()
-      //  ServiceItemCard(servicesDestinations = ServicesDestinations.BuyAirtimeScreen)
          HomeScreen(navController)
-         //ServiceCard(navController = navController)
-       // BalanceAndDashboard(navController = navController)
-       // BannarCard(navController = navController)
-
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun TransactionPreview() {
@@ -652,73 +661,4 @@ private fun TransactionPreview() {
         )
         TransactionItemCard(transaction = transaction1,navController)
     }
-}
-fun transactionList(): List<Transaction> {
-    val transaction1 = Transaction(
-        title = "Airtime",
-        amount = 298.09,
-        dateAndTime = "2024-02-13 12:30 PM",
-        type = TransactionType.AIRTIME,
-        tRef = "TRX123456"
-    )
-
-    val transaction2 = Transaction(
-        title = "Data Purchase",
-        amount = 305.58,
-        dateAndTime = "2024-02-13 3:45 PM",
-        type = TransactionType.DATA,
-        tRef = "TRX789012"
-    )
-
-    val transaction3 = Transaction(
-        title = "Bills",
-        amount = 200.00,
-        dateAndTime = "2024-02-13 12:30 PM",
-        type = TransactionType.AIRTIME,
-        tRef = "TRX123456"
-    )
-
-    val transaction4 = Transaction(
-        title = "Data Purchase",
-        amount = 305.58,
-        dateAndTime = "2024-02-13 3:45 PM",
-        type = TransactionType.DATA,
-        tRef = "TRX789012"
-    )
-    val transaction5 = Transaction(
-        title = "Airtime",
-        amount = 207.80,
-        dateAndTime = "2024-02-13 12:30 PM",
-        type = TransactionType.AIRTIME,
-        tRef = "TRX123456"
-    )
-
-    val transaction6 = Transaction(
-        title = " Data Purchase",
-        amount = 3575.5,
-        dateAndTime = "2024-02-13 3:45 PM",
-        type = TransactionType.DATA,
-        tRef = "TRX789012"
-    )
-
-    val transaction7 = Transaction(
-        title = "Fund wallet",
-        amount = 3575.50,
-        dateAndTime = "2024-02-13 3:45 PM",
-        type = TransactionType.WALLET_TOP_UP,
-        tRef = "TRX789012"
-    )
-
-    // Putting transactions in a list
-
-    //emptyList<Transaction>()
-    return listOf(
-        transaction1,
-        transaction2,
-        transaction3,
-        transaction4,
-        transaction5,
-        transaction6,
-        transaction7
-    )
 }

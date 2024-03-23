@@ -178,7 +178,7 @@ fun OnboardingPage(
 @Composable
 fun OnboardingPreview() {
 
-    PAYWIZZARDTheme(darkTheme = false) {
+    PAYWIZZARDTheme() {
 
         OnboardingScreen(){
 

@@ -1,9 +1,14 @@
 package com.paywizzard.app.screens
 
+
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,8 +35,8 @@ import com.paywizzard.app.screens.services_pages.ReferAndEarnScreen
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
 @Composable
-fun DashboardPage() {
-
+fun DashboardPage(
+) {
     val navController = rememberNavController()
 
     val bottomNavigationScreens = listOf<BottomNavDestinations>(
@@ -40,22 +45,19 @@ fun DashboardPage() {
         BottomNavDestinations.History,
         BottomNavDestinations.Account
     )
-    Scaffold(
-        contentColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            BottomAppBar(navController,bottomNavigationScreens)
+    PAYWIZZARDTheme {
+        Scaffold(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            bottomBar = {
+                BottomAppBar(navController,bottomNavigationScreens)
+            }
+        ) {
+            MainScreenNavigationConfigurations(paddingValues = it, navController = navController)
+
         }
-    ) {
-        MainScreenNavigationConfigurations(paddingValues = it, navController = navController)
-
     }
+
 }
-
-
-
-
-
-
 
 
 @Composable
@@ -115,8 +117,6 @@ private fun MainScreenNavigationConfigurations(
         composable(HomeScreenNavDestinations.TransactionsScreen.route) {
            HistoryScreen(paddingValues = paddingValues, navController = navController)
         }
-
-
         // here
 
         composable(ServicesDestinations.BuyAirtimeScreen.route) {
@@ -165,7 +165,6 @@ private fun DashBoardPreview() {
 private fun HomePagePreview() {
     PAYWIZZARDTheme {
         val navController = rememberNavController()
-
         HomeScreen(navController)
     }
 }

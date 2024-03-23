@@ -1,5 +1,6 @@
 package com.paywizzard.app.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,23 +15,41 @@ import com.paywizzard.app.screens.OnboardingScreen
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Check if onboarding has already been completed
+        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+        val onboardingCompleted = sharedPreferences.getBoolean("onboarding_completed", false)
+
         setContent {
-            PAYWIZZARDTheme {
-                // A surface container using the 'background' color from the theme
+            PAYWIZZARDTheme() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    if (onboardingCompleted) {
+                        // Onboarding completed, navigate to AuthActivity
+                        val intent = Intent(this, AuthActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // Show onboarding screen
+                        OnboardingScreen {
+                            // Onboarding completed, save the status
+                            with(sharedPreferences.edit()) {
+                                putBoolean("onboarding_completed", true)
+                                apply()
+                            }
 
-                 OnboardingScreen {
-                     val intent = Intent(this, AuthActivity::class.java)
-                     startActivity(intent)
-                     this.finish()
-                 }
+                            // Navigate to AuthActivity
+                            val intent = Intent(this@MainActivity, AuthActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
                 }
-
             }
         }
     }

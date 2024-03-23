@@ -84,20 +84,13 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun PAYWIZZARDTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+   // darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) DarkColors else LightColors
-        }
+    val colorScheme = LightColors
 
-        darkTheme -> DarkColors
-        else -> LightColors
-    }
+    /*
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -106,6 +99,8 @@ fun PAYWIZZARDTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
+
+     */
 
     MaterialTheme(
         colorScheme = colorScheme,

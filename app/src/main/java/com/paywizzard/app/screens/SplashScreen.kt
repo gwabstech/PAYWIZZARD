@@ -103,7 +103,7 @@ fun SplashScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SplashScreenPreview() {
-    PAYWIZZARDTheme (darkTheme = false){
+    PAYWIZZARDTheme (){
 
     }
 }

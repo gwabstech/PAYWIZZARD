@@ -17,15 +17,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.paywizzard.app.R
 import com.paywizzard.app.components.BlueButton
 import com.paywizzard.app.components.WhiteButton
+import com.paywizzard.app.nav.AuthDestination
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
 @Composable
 fun GetStartedPage(
-    onLoginCLicked: () -> Unit,
-    onRegisterClicked: () -> Unit
+   navHostController: NavHostController
 ){
 
     Column(
@@ -58,12 +60,12 @@ fun GetStartedPage(
         Spacer(modifier = Modifier.height(30.dp))
 
         BlueButton(title = stringResource(id = R.string.login)) {
-            onLoginCLicked()
+            navHostController.navigate(AuthDestination.LoginScreen.route)
         }
         Spacer(modifier = Modifier.height(30.dp))
 
         WhiteButton(title = stringResource(id = R.string.register)) {
-            onRegisterClicked()
+            navHostController.navigate(AuthDestination.RegisterScreen.route)
         }
 
     }
@@ -75,12 +77,8 @@ fun GetStartedPage(
 @Composable
 private fun GetStartedPreview(){
     PAYWIZZARDTheme {
-
-        GetStartedPage(onLoginCLicked = {
-
-        }) {
-
-        }
+        val navController = rememberNavController()
+        GetStartedPage(navController)
 
 
     }
