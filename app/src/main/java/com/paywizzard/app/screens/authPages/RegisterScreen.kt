@@ -56,6 +56,7 @@ import com.paywizzard.app.nav.AuthDestination
 import com.paywizzard.app.network.RetrofitClient
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RegisterPage(
     registerViewModel: RegisterViewModel,
@@ -157,12 +158,26 @@ fun RegisterPage(
             if (showRePasswordError)
                 ShowError(type =INPUT_TYPE.CPASSWORD,emailValue,password,rePassword )
 
+            Text(
+                modifier = Modifier
+                    .basicMarquee(
+                        iterations = Int.MAX_VALUE
+                    )
+                    .padding(10.dp),
+                text = "Password should consist of at least 8 characters with a mix of uppercase letters (A-Z), lowercase letters (a-z), and numbers (0-9).",
+                style = TextStyle(
+                    fontStyle = FontStyle(R.font.poppins_medium),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    letterSpacing = 3.sp,
+                    lineBreak = LineBreak.Simple,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                ),
 
+                )
             Spacer(modifier = Modifier.height(20.dp))
             BlueButton(title = stringResource(R.string.next)) {
-                Log.i("TAG",registerViewModel.email.value!!)
-                Log.i("TAG",registerViewModel.password.value!!)
-                Log.i("TAG",registerViewModel.confirmPassword.value!!)
 
                 if (!validateEmail(emailValue)) {
                     showEmailValueError = true

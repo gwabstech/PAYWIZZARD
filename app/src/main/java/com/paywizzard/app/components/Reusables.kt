@@ -3,6 +3,9 @@
 package com.paywizzard.app.components
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -32,6 +35,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonColors
+import androidx.compose.material.RadioButtonDefaults
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -39,6 +46,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,12 +68,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -98,17 +109,22 @@ import kotlinx.coroutines.yield
 import java.util.regex.Pattern
 
 enum class INPUT_TYPE {
-    PASSWORD, EMAIL, PHONE, NUMBER, ORDERS,CPASSWORD
+    PASSWORD, EMAIL, PHONE, NUMBER, ORDERS, CPASSWORD,
 }
 
 enum class NETWORK {
     MTN, AIRTEL, GLO, NINE_MOBILE
 }
 
-enum class PAYMENT_TYPE {
+enum class TRANSACTION_TYPE {
     AIRTIME, DATA, ELECTRICITY, INTERNET, WEAC, NECO, JAMB
 }
 
+
+enum class PaymentOption(val label: String) {
+    WALLET(label = "Wallet"),
+    MONNIFY("Monnify")
+}
 
 @Composable
 fun TransactionItemCard(transaction: Transaction, navController: NavHostController) {
@@ -555,7 +571,7 @@ fun GeneraleTopAppBar(
                             lineHeight = 24.sp,
                             textAlign = TextAlign.Center
                         ),
-                        color = MaterialTheme.colorScheme.background,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -599,7 +615,7 @@ fun EditText(
         onValueChange = {
             onValueChanged(it)
 
-            isValid = validateInput(type, it,"","")
+            isValid = validateInput(type, it, "",)
         },
         shape = RoundedCornerShape(8.dp),
         maxLines = 1,
@@ -624,8 +640,6 @@ fun EditText(
             maxLines = 1
         )
     }
-
-
 
 
 }
@@ -661,7 +675,7 @@ fun EmailTextField(
             unfocusedBorderColor = Color(0x56020040),
         ),
         trailingIcon = {
-                       Icon(imageVector = Icons.Filled.Email, contentDescription = "")
+            Icon(imageVector = Icons.Filled.Email, contentDescription = "")
         },
         modifier = modifier
             .fillMaxWidth()
@@ -722,9 +736,11 @@ fun PasswordTextField(
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                Icon(painter = if (isPasswordVisible) painterResource(id = R.drawable.visibility) else painterResource(
-                    id = R.drawable.visibility_off
-                ), contentDescription = "Toggle password visibility")
+                Icon(
+                    painter = if (isPasswordVisible) painterResource(id = R.drawable.visibility) else painterResource(
+                        id = R.drawable.visibility_off
+                    ), contentDescription = "Toggle password visibility"
+                )
             }
         },
         textStyle = MaterialTheme.typography.displayMedium
@@ -745,27 +761,20 @@ fun PasswordTextField(
 }
 
 
-
-
-
-
-
-
-
 @Composable
 fun LoadingBottomSheetContent(
-   isError :Boolean,
-   message:String,
-   onDismissed:()-> Unit
-){
+    isError: Boolean,
+    message: String,
+    onDismissed: () -> Unit
+) {
 
     var loadingMessage by remember {
         mutableStateOf(message)
     }
 
-    if (!isError){
+    if (!isError) {
 
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -773,32 +782,32 @@ fun LoadingBottomSheetContent(
                 .heightIn(250.dp)
                 .padding(10.dp)
                 .background(Color.White)
-        ){
+        ) {
 
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(45.dp),
-                    color = MaterialTheme.colorScheme.primary,
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(45.dp),
+                color = MaterialTheme.colorScheme.primary,
+            )
+
+            Text(
+                text = loadingMessage,
+                modifier = Modifier.padding(5.dp),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Normal,
+                    fontSize = 18.sp,
+                    letterSpacing = 2.sp,
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.scrim
                 )
+            )
+        }
 
-                Text(
-                    text = loadingMessage,
-                    modifier = Modifier.padding(5.dp),
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 18.sp,
-                        letterSpacing = 2.sp,
-                        textAlign = TextAlign.Start,
-                        color = MaterialTheme.colorScheme.scrim
-                    )
-                )
-            }
+    } else {
 
-        }else{
-
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -806,8 +815,9 @@ fun LoadingBottomSheetContent(
                 .heightIn(250.dp)
                 .padding(10.dp)
                 .background(Color.White)
-        ){
-            Icon(imageVector = Icons.Filled.Info,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Info,
                 contentDescription = "",
                 modifier = Modifier
                     .padding(10.dp)
@@ -835,18 +845,6 @@ fun LoadingBottomSheetContent(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @Composable
@@ -1015,13 +1013,15 @@ fun FundWalletButtomSheetContent(
 
 @Composable
 fun ConfirmPurchaseDialogContentCard(
-    paymentType: PAYMENT_TYPE,
+    paymentType: TRANSACTION_TYPE,
     amount: String,
     provider: String,
     mobileNumber: String,
-    onConfirmPaymentClick: () -> Unit
+    onConfirmPaymentClick: (PaymentOption) -> Unit
 
 ) {
+
+    var selectedOption by remember { mutableStateOf(PaymentOption.WALLET) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -1050,7 +1050,7 @@ fun ConfirmPurchaseDialogContentCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp),
-            text = amount,
+            text = "₦$amount",
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle(R.font.poppins_bold),
@@ -1063,13 +1063,142 @@ fun ConfirmPurchaseDialogContentCard(
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
         )
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         PaymentDetailsCard(amount = amount, provider = provider, mobileNumber = mobileNumber)
-        BlueButton(title = "Confirm payment") {
-            onConfirmPaymentClick()
+        Spacer(modifier = Modifier.height(5.dp))
+        PaymentOptionsCard {
+            selectedOption = it
         }
         Spacer(modifier = Modifier.height(20.dp))
+        BlueButton(title = "Confirm payment") {
+            onConfirmPaymentClick(selectedOption)
+        }
+        Spacer(modifier = Modifier.height(30.dp))
 
+    }
+}
+
+
+@Composable
+fun PaymentOptionsCard(
+    onSelectedOptionChanged: (PaymentOption) -> Unit
+) {
+    var selectedOption by remember { mutableStateOf(PaymentOption.WALLET) }
+
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background, // Set container background to white
+            contentColor = MaterialTheme.colorScheme.background
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp)
+        ) {
+
+            Text(
+                text = "Secured Payment options ",
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle(R.font.poppins_bold),
+                    color = MaterialTheme.colorScheme.scrim,
+                    fontSize = 15.sp,
+                    letterSpacing = 2.sp,
+                    lineHeight = 24.sp,
+                    textAlign = TextAlign.Center
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+            // Wallet Row
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        selectedOption = PaymentOption.WALLET
+                        onSelectedOptionChanged(selectedOption)
+                    }
+            ) {
+
+
+                Icon(
+                    painter = painterResource(id = R.drawable.balance_wallet),
+                    contentDescription = "Wallet Icon",
+                    modifier = Modifier.size(30.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Wallet",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle(R.font.poppins_bold),
+                        color = MaterialTheme.colorScheme.scrim,
+                        fontSize = 13.sp,
+                        letterSpacing = 0.30.sp,
+                        lineHeight = 24.sp,
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+                RadioButton(
+                    selected = selectedOption == PaymentOption.WALLET,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = MaterialTheme.colorScheme.primary
+                    ),
+                    onClick = {
+                        selectedOption = PaymentOption.WALLET
+                        onSelectedOptionChanged(selectedOption)
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            // Monnify Row
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        selectedOption = PaymentOption.MONNIFY
+                        onSelectedOptionChanged(selectedOption)
+                    }
+            ) {
+
+
+                Image(
+                    painter = painterResource(id = R.drawable.monnify),
+                    contentDescription = "Monnify Logo",
+                    modifier = Modifier.size(30.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Monnify",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle(R.font.poppins_bold),
+                        color = MaterialTheme.colorScheme.scrim,
+                        fontSize = 13.sp,
+                        letterSpacing = 0.30.sp,
+                        lineHeight = 24.sp,
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+
+                RadioButton(
+                    selected = selectedOption == PaymentOption.MONNIFY,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = MaterialTheme.colorScheme.primary
+                    ),
+                    onClick = {
+                        selectedOption = PaymentOption.MONNIFY
+                        onSelectedOptionChanged(selectedOption)
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -1080,12 +1209,10 @@ fun PaymentDetailsCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp), colors = CardDefaults.cardColors(
+            .padding(15.dp), colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background, // Set container background to white
             contentColor = MaterialTheme.colorScheme.background
-        ), elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ), shape = RoundedCornerShape(15.dp)
+        )
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Row(
@@ -1102,7 +1229,7 @@ fun PaymentDetailsCard(
                 color = MaterialTheme.colorScheme.scrim
             )
             Text(
-                text = amount,
+                text = "₦ $amount",
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.scrim
             )
@@ -1159,14 +1286,17 @@ fun PaymentDetailsCard(
         Spacer(modifier = Modifier.height(10.dp))
 
     }
-    Spacer(modifier = Modifier.height(20.dp))
+
 
 }
 
 @Composable
 fun TransactionPinBottomSheetContent(
     modifier: Modifier = Modifier,
-    context: Context, onOtpChanged: (String) -> Unit
+    navController: NavHostController,
+    context: Context,
+    selectedOption: PaymentOption,
+    onOtpChanged: (String) -> Unit
 ) {
     //  Toast.makeText(context,"Transaction successfully",Toast.LENGTH_SHORT).show()
     var otpText by remember {
@@ -1230,7 +1360,7 @@ fun TransactionPinInput(
         value = otpText,
         onValueChange = {
             otpText = it
-            onDone(it)
+            onDone(otpText)
         },
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -1290,7 +1420,7 @@ fun NetworkSelector(
             Text(
                 text = stringResource(R.string.select_network_provider),
                 modifier = modifier
-                    .padding(start = 20.dp, top = 5.dp, bottom = 5.dp)
+                    .padding(start = 20.dp, top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
@@ -1309,7 +1439,6 @@ fun NetworkSelector(
                 modifier = modifier
                     .padding(10.dp)
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
                     .horizontalScroll(rememberScrollState())
             ) {
                 repeat(NETWORK.entries.size) { index ->
@@ -1322,7 +1451,7 @@ fun NetworkSelector(
                         NETWORK.NINE_MOBILE -> R.drawable.etisalat
                     }
                     Card(
-                    // Adjust the elevation as needed
+                        // Adjust the elevation as needed
                         modifier = modifier
                             .padding(8.dp)
                             .size(70.dp)
@@ -1350,7 +1479,12 @@ fun NetworkSelector(
 }
 
 
-fun validateInput(type: INPUT_TYPE, input: String, cpassword: String = "", cpassword1: String): Boolean {
+fun validateInput(
+    type: INPUT_TYPE,
+    input: String,
+    cpassword: String = "",
+
+): Boolean {
     // Implement your validation logic based on the input type
     return when (type) {
         INPUT_TYPE.PASSWORD -> validatePassword(input)
@@ -1367,6 +1501,34 @@ fun validatePassword(password: String): Boolean {
     // For example, check if it's at least 8 characters long, contains at least one letter and one number, etc.
     val passwordPattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     return passwordPattern.matcher(password).matches()
+}
+
+fun isInternetConnected(context: Context): Boolean {
+ /*
+    """
+    Checks if the device has a stable internet connection.
+
+    Args:
+        context: The application context.
+
+    Returns:
+        True if the device has an active internet connection, False otherwise.
+    """
+
+  */
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val activeNetwork = connectivityManager.activeNetwork ?: return false
+        val networkCapabilities =
+            connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+        networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    } else {
+        // For older SDK versions, use legacy methods for compatibility
+        val networkInfo = connectivityManager.activeNetworkInfo
+        networkInfo != null && networkInfo.isConnected
+    }
 }
 
 fun validateEmail(email: String): Boolean {
@@ -1394,10 +1556,11 @@ fun validateNumber(number: String): Boolean {
     }
 }
 
-fun validateCP( password: String,c_password:String): Boolean {
+fun validateCP(password: String, c_password: String): Boolean {
 
     return password == c_password
 }
+
 fun validateOthers(string: String): Boolean {
     if (string.isEmpty() || string.length < 3) {
         return false
@@ -1471,8 +1634,8 @@ private fun NetworkSelectorPreview() {
 private fun ConfirmPurchaseDialogContentCardPreview() {
     PAYWIZZARDTheme {
         ConfirmPurchaseDialogContentCard(
-            paymentType = PAYMENT_TYPE.AIRTIME,
-            amount = "₦ 200",
+            paymentType = TRANSACTION_TYPE.AIRTIME,
+            amount = "200",
             provider = NETWORK.MTN.name,
             mobileNumber = "09030863146"
         ) {
@@ -1510,11 +1673,11 @@ private fun TransactionPinPreview() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
- fun ShowError(type:INPUT_TYPE,email:String, password: String, cpassword: String){
+fun ShowError(type: INPUT_TYPE, email: String, password: String, cpassword: String) {
 
-    when(type){
-        INPUT_TYPE.EMAIL-> {
-            if (!validateInput(type,email,password,cpassword))
+    when (type) {
+        INPUT_TYPE.EMAIL -> {
+            if (!validateEmail(email))
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1528,9 +1691,8 @@ private fun TransactionPinPreview() {
         }
 
 
-
-        INPUT_TYPE.PASSWORD->{
-            if (!validateInput(type,password,password,cpassword))
+        INPUT_TYPE.PASSWORD -> {
+            if (!validatePassword(password))
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1543,8 +1705,8 @@ private fun TransactionPinPreview() {
                 )
         }
 
-        INPUT_TYPE.CPASSWORD-> {
-            if (!validateInput(type,email,password,cpassword))
+        INPUT_TYPE.CPASSWORD -> {
+            if (!validateCP( password, cpassword))
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1556,12 +1718,9 @@ private fun TransactionPinPreview() {
                     maxLines = 1
                 )
         }
-
 
         else -> {}
     }
-
-
 
 
 }
@@ -1569,18 +1728,34 @@ private fun TransactionPinPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun LoadingBottomSheetContentPreview(){
+private fun LoadingBottomSheetContentPreview() {
     PAYWIZZARDTheme {
-       /*
-        val loginState = LoginState.Error
-        val activity: Activity
-        AuthLoadingBottomSheetContent(loginState = loginState) {
-           // loginState = LoginState.Idle
-            Log.i("TAG","ondismisswed")
-        }
+        /*
+         val loginState = LoginState.Error
+         val activity: Activity
+         AuthLoadingBottomSheetContent(loginState = loginState) {
+            // loginState = LoginState.Idle
+             Log.i("TAG","ondismisswed")
+         }
 
-        */
+         */
+
     }
+}
+
+
+//PaymentOptions
+@Preview(showBackground = true)
+@Composable
+private fun PaymentOptionsCardPreview(){
+
+    PAYWIZZARDTheme (){
+
+        PaymentOptionsCard {
+
+        }
+    }
+
 }
 
 
@@ -1589,6 +1764,7 @@ private fun LoadingBottomSheetContentPreview(){
 private fun TransactionPinSheetPreview() {
 
     val context = LocalContext.current
+    val navController = rememberNavController()
 
     PAYWIZZARDTheme {
         Column(
@@ -1597,7 +1773,11 @@ private fun TransactionPinSheetPreview() {
 
             ) {
 
-            TransactionPinBottomSheetContent(context = context) {
+            TransactionPinBottomSheetContent(
+                navController = navController,
+                context = context,
+                selectedOption = PaymentOption.MONNIFY
+            ) {
                 Toast.makeText(
                     context,
                     "Transaction successfully with the following pin $it",

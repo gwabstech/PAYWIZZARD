@@ -1,9 +1,12 @@
 package com.paywizzard.app.activities
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,10 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.paywizzard.app.components.registerNetworkCallback
+import com.paywizzard.app.components.unregisterNetworkCallback
 import com.paywizzard.app.data.viewModels.AuthViewModel
 import com.paywizzard.app.data.viewModels.RegisterViewModel
 import com.paywizzard.app.nav.AuthDestination
@@ -32,6 +36,7 @@ import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 class AuthActivity : ComponentActivity() {
     //val authViewModel = AuthViewModel(RetrofitClient.apiService())
     //  val registerViewModel = RegisterViewModel(RetrofitClient.apiService())
+    private val networkCallback: com.paywizzard.app.components.NetworkCallbackImpl = com.paywizzard.app.components.NetworkCallbackImpl()
     private val loginViewModel: AuthViewModel by viewModels {
         AuthViewModel.Factory(RetrofitClient.apiService())
     }
@@ -39,8 +44,11 @@ class AuthActivity : ComponentActivity() {
         RegisterViewModel.Factory(RetrofitClient.apiService())
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        registerNetworkCallback(this, networkCallback)
         setContent {
             PAYWIZZARDTheme(
 
@@ -63,6 +71,30 @@ class AuthActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterNetworkCallback(this, networkCallback)
+    }
+
+    private inner class NetworkCallbackImpl : ConnectivityManager.NetworkCallback() {
+
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            // Device connected to a network with internet capabilities
+            // Update UI or perform actions that require internet access
+            Log.i("TAG","Connected to the internet!")
+            Toast.makeText(this@AuthActivity, "Connected to the internet!", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            // Device lost connection to the network
+            // Handle offline behavior
+            Log.i("TAG","Disconnected from the internet!")
+            Toast.makeText(this@AuthActivity, "Disconnected from the internet!", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
 
 
@@ -73,6 +105,8 @@ private fun AuthNavigationConfigurations(
     loginViewModel: AuthViewModel,
     registerViewModel: RegisterViewModel
 ) {
+
+
 
     NavHost(navController, startDestination = AuthDestination.GetStartedScreen.route) {
         composable(AuthDestination.GetStartedScreen.route) {

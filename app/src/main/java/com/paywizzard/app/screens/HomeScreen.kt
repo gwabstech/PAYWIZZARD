@@ -263,7 +263,8 @@ private fun RecentTransactions(
                     }
 
                     items(transactions) { transaction ->
-                        TransactionItemCard(transaction = transaction,navController)
+                       TransactionItemCard(transaction = transaction,navController)
+
                     }
                 }
 

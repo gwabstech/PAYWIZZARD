@@ -162,8 +162,6 @@ fun LoginFormPage(
                 emailValue = it
                 emailIsValid = validateEmail(it)
             }
-            if (showEmailValueError)
-                ShowError(type =INPUT_TYPE.EMAIL,emailValue, passwordValue,"" )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -172,8 +170,6 @@ fun LoginFormPage(
                 passwordValue = it
                 passwordIsValid = validatePassword(it)
             }
-            if (showPasswordError)
-                ShowError(type =INPUT_TYPE.EMAIL,emailValue, passwordValue,"" )
 
             Text(
                 modifier = Modifier
@@ -200,10 +196,10 @@ fun LoginFormPage(
 
 
                 if (!validateEmail(emailValue)) {
-                    showEmailValueError = true
+
                     Log.i("TAG","email error")
                 }else if (!validatePassword(passwordValue)){
-                    showPasswordError = true
+
                     Log.i("TAG","email error")
                 }else{
                     showEmailValueError = false

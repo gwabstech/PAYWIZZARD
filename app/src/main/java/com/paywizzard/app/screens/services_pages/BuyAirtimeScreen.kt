@@ -1,7 +1,11 @@
 package com.paywizzard.app.screens.services_pages
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,33 +33,41 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.paywizzard.app.R
 import com.paywizzard.app.components.BlueButton
+import com.paywizzard.app.components.ConfirmPurchaseDialogContentCard
 import com.paywizzard.app.components.EditText
 import com.paywizzard.app.components.GeneraleTopAppBar
 import com.paywizzard.app.components.INPUT_TYPE
 import com.paywizzard.app.components.NETWORK
 import com.paywizzard.app.components.NetworkSelector
+import com.paywizzard.app.components.PaymentOption
+import com.paywizzard.app.components.TRANSACTION_TYPE
 import com.paywizzard.app.components.TransactionPinBottomSheetContent
 import com.paywizzard.app.nav.HomeScreenNavDestinations
 import com.paywizzard.app.ui.theme.PAYWIZZARDTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun BuyAirtimeScreen(
     navController: NavHostController,
@@ -63,6 +78,11 @@ fun BuyAirtimeScreen(
 
     var selectedNetwork by remember {
         mutableStateOf<NETWORK?>(null)
+
+    }
+
+    var selectedPaymentOption by remember {
+        mutableStateOf(PaymentOption.WALLET)
 
     }
     var amount by remember {
@@ -79,9 +99,13 @@ fun BuyAirtimeScreen(
     var showTransactionPinSheet by rememberSaveable {
         mutableStateOf(false)
     }
-    var showConfirmationSheet by remember {
+    var showConfirmSheet by rememberSaveable {
         mutableStateOf(false)
     }
+    var showSelectNetworkError by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,7 +120,6 @@ fun BuyAirtimeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-
                 .verticalScroll(rememberScrollState())
                 .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,7 +128,21 @@ fun BuyAirtimeScreen(
             Spacer(modifier = Modifier.height(20.dp))
             NetworkSelector(onSelect = {
                 selectedNetwork = it
+                showSelectNetworkError = false
             })
+            if (showSelectNetworkError)
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .basicMarquee(),
+                    text = "Select service provider",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.End,
+                    maxLines = 1
+                )
+
             Spacer(modifier = Modifier.height(10.dp))
 
 
@@ -120,34 +157,63 @@ fun BuyAirtimeScreen(
                 onSuggestedAmountChanged = {
                     amount = it.toString()
                 }
-            )
+            ) {
+                if (selectedNetwork == null) {
+                    showSelectNetworkError = true
+                } else {
+                    showConfirmSheet = true
+                }
+
+
+            }
         }
 
 
-        if (showTransactionPinSheet) {
-            if (selectedNetwork != null) {
-                ModalBottomSheet(
-                    sheetState = transactionSheetState,
-                    dragHandle = { BottomSheetDefaults.DragHandle() },
-                    onDismissRequest = { showTransactionPinSheet = false }
+        if (showConfirmSheet) {
+            ModalBottomSheet(
+                sheetState = confirmSheetState,
+                dragHandle = { BottomSheetDefaults.DragHandle() },
+                onDismissRequest = { showConfirmSheet = false }
+            ) {
+
+                ConfirmPurchaseDialogContentCard(
+                    paymentType = TRANSACTION_TYPE.AIRTIME,
+                    amount = amount,
+                    provider = selectedNetwork.toString(),
+                    mobileNumber = phone
                 ) {
-
-                    TransactionPinBottomSheetContent(context = context, onOtpChanged = {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.successMessage),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    })
+                    selectedPaymentOption = it
+                    showConfirmSheet = false
+                    showTransactionPinSheet = true
                 }
-            } else {
-                Toast.makeText(context, "Please Select a network...!", Toast.LENGTH_SHORT).show()
-            }
 
+            }
+        }
+
+    }
+    if (showTransactionPinSheet) {
+        ModalBottomSheet(
+            sheetState = transactionSheetState,
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+            onDismissRequest = { showTransactionPinSheet = false }
+        ) {
+
+            TransactionPinBottomSheetContent(
+                navController = navController,
+                context = context,
+                selectedOption = selectedPaymentOption,
+                onOtpChanged = {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.successMessage),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                })
         }
 
 
     }
+
 
 }
 
@@ -158,7 +224,8 @@ fun NumberAndAmountSection(
     phoneNumber: String,
     onAmountChange: (String) -> Unit,
     onPhoneNumberChanged: (String) -> Unit,
-    onSuggestedAmountChanged: (String)-> Unit
+    onSuggestedAmountChanged: (String) -> Unit,
+    onProceed: () -> Unit
 ) {
 
 
@@ -207,7 +274,24 @@ fun NumberAndAmountSection(
             }
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Or",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Select Amount",
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
         SuggestedAmounts {
             onSuggestedAmountChanged(it)
         }
@@ -215,13 +299,14 @@ fun NumberAndAmountSection(
         Spacer(modifier = Modifier.height(150.dp))
         BlueButton(title = "Proceed") {
 
-            //  onshow(true)
+            onProceed()
         }
 
         Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
+// TODO: work on this tomorrow to be two in a row and column
 @Composable
 private fun SuggestedAmounts(
     modifier: Modifier = Modifier,
@@ -231,7 +316,7 @@ private fun SuggestedAmounts(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        val amounts = listOf(200, 500, 1000)
+        val amounts = listOf(100,200, 500, 1000)
 
         amounts.forEach { amount ->
             Button(
@@ -244,13 +329,16 @@ private fun SuggestedAmounts(
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 Text(
-                    text = "$amount",
+                    fontSize = 12.sp,
+                    text = "₦$amount",
                     color = Color.White
                 )
             }
         }
     }
 }
+
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
